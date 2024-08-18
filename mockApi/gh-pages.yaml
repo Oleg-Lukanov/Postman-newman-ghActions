@@ -3,41 +3,46 @@ on:
   push:
     branches:
       - main
+      - develop
 
 jobs:
   test-api:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      # Checkout the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-      # Install Node on the runner
-      - name: Install Node
+      # Install Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "node"  # Use the latest stable version
 
-      # Install the newman command line utility and also install the html extra reporter
-      - name: Install newman
+      # Install Newman and Reporter
+      - name: Install Newman and Reporter
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
 
-      # Make directory to upload the test results
-      - name: Make Directory for results
-        run: mkdir -p testResults
-
-      # Run the POSTMAN collection
-      - name: Run POSTMAN collection
+      # Run Postman Collection and Generate Report
+      - name: Run Postman Collection
         run: |
-          newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme
+          mkdir -p testResults
+          newman run Demo-My.postman_collection.json \
+            -r htmlextra \
+            --reporter-htmlextra-export testResults/htmlreport.html \
+            --reporter-htmlextra-darkTheme
 
-      # Commit and push the report to the gh-pages branch
+      # Deploy to gh-pages branch
       - name: Deploy to GitHub Pages
         run: |
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
-          git checkout --orphan gh-pages
-          git --work-tree=testResults add --all
-          git --work-tree=testResults commit -m "Deploy test report"
+          git fetch origin
+          git checkout -B gh-pages
+          git rm -rf .  # Clean the branch to avoid leftovers
+          mv testResults/htmlreport.html index.html  # Rename report to index.html for easier access
+          git add index.html
+          git commit -m "Deploy test report"
           git push origin gh-pages --force
