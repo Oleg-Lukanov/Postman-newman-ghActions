@@ -37,8 +37,8 @@ jobs:
       # Deploy to gh-pages branch
       - name: Deploy to GitHub Pages
         run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
+          git config --global user.email "oleeluk@gmail.com"
+          git config --global user.name "Oleg-Lukanov"
           git fetch origin
           git checkout -B gh-pages
           git rm -rf .  # Clean the branch to avoid leftovers
