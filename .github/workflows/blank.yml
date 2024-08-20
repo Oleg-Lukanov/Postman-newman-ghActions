@@ -1,46 +1,44 @@
 name: Test-Build
-
 on:
   push:
     branches:
       - main
-
 jobs:
   test-api:
     runs-on: ubuntu-latest
-
     steps:
-      # Check out the repository
-      - name: Check out repository
-        uses: actions/checkout@v3
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-      # Install the latest Node.js version
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+
+      # INstall Node on the runner
+      - name: Install Node
+        uses: actions/setup-node@v1
         with:
-          node-version: "node"  # This will use the latest stable Node.js version
+          node-version: "12.x"
 
-      # Install Newman and the Newman Reporter
-      - name: Install Newman and Reporter
+
+      # Install the newman command line utility and also install the html extra reporter
+      - name: Install newman
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
 
-      # Create a directory for test results
-      - name: Create Directory for Test Results
+
+      # Make directory to upload the test results
+      - name: Make Directory for results
         run: mkdir -p testResults
 
-      # Run the Postman collection
-      - name: Run Postman Collection
-        run: |
-          newman run petstore.collection.json \
-          -r htmlextra \
-          --reporter-htmlextra-export testResults/htmlreport.html \
-          --reporter-htmlextra-darkTheme
 
-      # Upload the test results
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v3
+      # Run the POSTMAN collection
+      - name: Run POSTMAN collection
+        run: |
+          newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+
+
+      # Upload the contents of Test Results directory to workspace
+      - name: Output the run Details
+        uses: actions/upload-artifact@v2
         with:
-          name: TestResults
-          path: testResults
+          name: RunReports
+          path: testResults 
