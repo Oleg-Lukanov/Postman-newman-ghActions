@@ -36,6 +36,11 @@ jobs:
         run: |
           newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme > testResults/runreport1.html
 
+      # Run a Node.js script with --trace-deprecation flag
+      - name: Run Script with Trace Deprecation
+        run: |
+          node --trace-deprecation blank.yml
+      
       # Upload the contents of the Test Results directory to the workspace
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
