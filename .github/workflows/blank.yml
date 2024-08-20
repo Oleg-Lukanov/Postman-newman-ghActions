@@ -39,7 +39,7 @@ jobs:
       # Run a Node.js script with --trace-deprecation flag
       - name: Run Script with Trace Deprecation
         run: |
-          node --trace-deprecation blank.yml
+          node --trace-deprecation petstore.collection.json
       
       # Upload the contents of the Test Results directory to the workspace
       - name: Upload Test Results
