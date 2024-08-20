@@ -14,27 +14,32 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Install the latest Node.js version
+      # Install Node.js version 18 (LTS)
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "node"  # This will use the latest stable Node.js version
+          node-version: "18.x"  # Use Node.js 18 LTS
+
+      # Update npm and install punycode
+      - name: Install and Update Dependencies
+        run: |
+          npm install -g npm  # Update npm to the latest version
+          npm install punycode  # Install punycode module
 
       # Install Newman and the Newman Reporter
       - name: Install Newman and Reporter
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
-          npm install punycode  # Ensure punycode is available if needed
 
       # Create a directory for test results
       - name: Create Directory for Test Results
         run: mkdir -p testResults
 
-      # Run the Postman collection
+      # Run the Postman collection with suppressed deprecation warnings
       - name: Run Postman Collection
         run: |
-          node --trace-deprecation $(which newman) run petstore.collection.json \
+          node --no-warnings $(which newman) run petstore.collection.json \
           -r htmlextra \
           --reporter-htmlextra-export testResults/htmlreport.html \
           --reporter-htmlextra-darkTheme \
