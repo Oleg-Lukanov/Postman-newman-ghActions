@@ -39,7 +39,7 @@ jobs:
       # Run the Postman collection with suppressed deprecation warnings
       - name: Run Postman Collection
         run: |
-          node --no-warnings $(which newman) run petstore.collection.json \
+          node --no-warnings $(which newman) run store2.postman_collection.json \
           -r htmlextra \
           --reporter-htmlextra-export testResults/htmlreport.html \
           --reporter-htmlextra-darkTheme \
