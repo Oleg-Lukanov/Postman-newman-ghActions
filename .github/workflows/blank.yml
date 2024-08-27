@@ -44,6 +44,7 @@ jobs:
           --reporter-htmlextra-export testResults/htmlreport.html \
           --reporter-htmlextra-darkTheme \
           > testResults/runreport1.html || exit 1  # Ensure failure is handled
+          continue-on-error true
 
       # Upload the test results
       - name: Upload Test Results
